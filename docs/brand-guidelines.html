@@ -1,0 +1,1265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atomic Ammunition — Brand Guidelines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.1.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+  :root {
+    --nuclear: #32CD32;
+    --nuclear-muted: #28A428;
+    --signal: #FFB000;
+    --signal-muted: #CC8D00;
+    --tracer: #ED1C24;
+    --tracer-muted: #BE1620;
+    --paper: #FAFBFB;
+    --chalk: #FCFCFC;
+    --concrete: #E5E5E5;
+    --washout: #CCCCCC;
+    --steel: #8E8E93;
+    --slate: #6B6B70;
+    --gunmetal: #404040;
+    --gunpowder: #0D0D0D;
+  }
+
+  /* === DARK THEME === */
+  [data-theme="dark"] {
+    --bg: var(--gunpowder);
+    --bg-nav: var(--gunpowder);
+    --text: var(--paper);
+    --text-secondary: var(--concrete);
+    --text-muted: var(--steel);
+    --border: var(--gunmetal);
+    --card-bg: rgba(13,13,13,0.5);
+    --grid-line: rgba(64,64,64,0.18);
+    --hover-tint: rgba(50,205,50,0.03);
+    --swatch-info-bg: rgba(13,13,13,0.8);
+    --file-tree-bg: rgba(13,13,13,0.5);
+    --section-divider: var(--gunmetal);
+    --table-alt: rgba(255,255,255,0.03);
+    --nav-section: var(--gunmetal);
+  }
+
+  /* === LIGHT THEME === */
+  [data-theme="light"] {
+    --bg: var(--paper);
+    --bg-nav: #F2F2F2;
+    --text: var(--gunpowder);
+    --text-secondary: #333;
+    --text-muted: var(--gunmetal);
+    --border: var(--concrete);
+    --card-bg: #fff;
+    --grid-line: rgba(200,200,200,0.20);
+    --hover-tint: rgba(50,205,50,0.05);
+    --swatch-info-bg: #fff;
+    --file-tree-bg: #F5F5F5;
+    --section-divider: var(--steel);
+    --table-alt: rgba(0,0,0,0.03);
+    --nav-section: var(--slate);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Roboto', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.6;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  .grid-bg {
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  /* === MOBILE TOP BAR + HAMBURGER (pure CSS) === */
+  #nav-toggle { display: none; }
+  .mobile-topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 56px; display: flex; align-items: center; gap: 12px; padding: 0 16px;
+    border-bottom: 1px solid var(--border); transition: background 0.3s, border-color 0.3s;
+  }
+  [data-theme="dark"] .mobile-topbar { background: var(--gunpowder); }
+  [data-theme="light"] .mobile-topbar { background: #fff; }
+  .mobile-topbar .topbar-icon { height: 28px; width: auto; }
+  .hamburger {
+    width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+    background: transparent; border: none; cursor: pointer; flex-shrink: 0;
+  }
+  .hamburger span,
+  .hamburger span::before,
+  .hamburger span::after {
+    display: block; width: 20px; height: 2px; background: var(--text);
+    position: relative; transition: all 0.3s;
+  }
+  .hamburger span::before,
+  .hamburger span::after { content: ""; position: absolute; left: 0; }
+  .hamburger span::before { top: -6px; }
+  .hamburger span::after { top: 6px; }
+  #nav-toggle:checked ~ .mobile-topbar .hamburger span { background: transparent; }
+  #nav-toggle:checked ~ .mobile-topbar .hamburger span::before { top: 0; transform: rotate(45deg); background: var(--nuclear); }
+  #nav-toggle:checked ~ .mobile-topbar .hamburger span::after { top: 0; transform: rotate(-45deg); background: var(--nuclear); }
+
+  /* NAV — mobile-first (hidden offscreen) */
+  nav {
+    position: fixed; top: 0; left: -280px; width: 280px; height: 100vh;
+    background: var(--bg-nav); border-right: 1px solid var(--border);
+    padding: 72px 24px 32px; overflow-y: auto; z-index: 150;
+    transition: left 0.3s ease, background 0.3s, border-color 0.3s;
+  }
+  #nav-toggle:checked ~ nav { left: 0; }
+  .nav-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); z-index: 140; opacity: 0; pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  #nav-toggle:checked ~ .nav-overlay { opacity: 1; pointer-events: auto; }
+
+  nav .nav-logo { margin-bottom: 8px; }
+  [data-theme="dark"] .nav-logo-dark { display: block !important; }
+  [data-theme="light"] .nav-logo-light { display: block !important; }
+  nav .nav-sub {
+    font-family: 'Roboto Mono', monospace; font-size: 10px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 32px;
+    padding-bottom: 20px; border-bottom: 1px solid var(--border);
+  }
+  nav a {
+    display: block; font-family: 'Roboto Mono', monospace; font-size: 12px; font-weight: 500;
+    color: var(--text-muted); text-decoration: none; padding: 8px 0;
+    text-transform: uppercase; letter-spacing: 0.06em; transition: color 0.2s;
+  }
+  nav a:hover { color: var(--nuclear); }
+  nav .nav-section-label {
+    font-size: 10px; color: var(--nav-section); text-transform: uppercase;
+    letter-spacing: 0.12em; margin-top: 24px; margin-bottom: 8px;
+    font-family: 'Roboto Mono', monospace; font-weight: 700;
+  }
+
+  /* THEME TOGGLE — 3 states */
+  .theme-switcher {
+    display: flex; align-items: center; gap: 6px; margin-bottom: 32px;
+    padding-bottom: 20px; border-bottom: 1px solid var(--border);
+  }
+  .theme-btn {
+    font-family: 'Roboto Mono', monospace; font-size: 10px; font-weight: 500;
+    text-transform: uppercase; letter-spacing: 0.06em; padding: 5px 10px;
+    border: 1px solid var(--border); background: transparent; color: var(--text-muted);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .theme-btn.active {
+    background: var(--nuclear); color: var(--gunpowder); border-color: var(--nuclear); font-weight: 700;
+  }
+
+  /* MAIN — mobile-first */
+  main { margin-left: 0; }
+  section {
+    padding: 48px 20px; border-bottom: 1px solid var(--section-divider); max-width: 1200px;
+  }
+
+  /* HERO — mobile-first (account for topbar) */
+  .hero { padding: 80px 20px 48px; padding-top: 80px; max-width: 1200px; }
+  .hero-logo { margin-bottom: 24px; }
+  .hero-logo svg { height: 72px; width: auto; }
+  [data-theme="dark"] .hero-logo .logo-fill { fill: #fff; }
+  [data-theme="light"] .hero-logo .logo-fill { fill: #0D0D0D; }
+  [data-theme="dark"] .hero-logo .logo-green { fill: #32CD32; }
+  [data-theme="light"] .hero-logo .logo-green { fill: #32CD32; }
+  .hero h1 {
+    font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 36px;
+    color: var(--nuclear); letter-spacing: -0.02em; line-height: 1.05; margin-bottom: 16px;
+  }
+  .hero .subtitle {
+    font-family: 'Roboto Mono', monospace; font-size: 13px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;
+  }
+  .hero .version { font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .hero .divider { width: 80px; height: 3px; background: var(--nuclear); margin: 24px 0; }
+
+  /* HEADINGS */
+  h2 { font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 36px; color: var(--text); letter-spacing: -0.01em; margin-bottom: 12px; }
+  .section-number { font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 14px; color: var(--nuclear); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; display: block; }
+  h3 { font-family: 'Roboto Mono', monospace; font-weight: 500; font-size: 22px; color: var(--text); margin-top: 48px; margin-bottom: 16px; }
+  h4 { font-family: 'Roboto Mono', monospace; font-weight: 500; font-size: 16px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 32px; margin-bottom: 12px; }
+
+  p { color: var(--text-secondary); margin-bottom: 16px; max-width: 720px; }
+  p strong { color: var(--text); font-weight: 500; }
+  .lead { font-size: 18px; color: var(--text-muted); max-width: 640px; margin-bottom: 24px; }
+  .accent-line { width: 48px; height: 2px; background: var(--nuclear); margin-bottom: 32px; }
+
+  /* TABLES — alternating rows, mobile scroll */
+  table { width: 100%; border-collapse: collapse; margin: 24px 0 32px; font-size: 14px; display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  th {
+    font-family: 'Roboto Mono', monospace; font-weight: 500; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted);
+    text-align: left; padding: 12px 16px; border-bottom: 2px solid var(--border);
+  }
+  td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text-secondary); vertical-align: top; }
+  tbody tr:nth-child(even) td { background: var(--table-alt); }
+  tr:hover td { background: var(--hover-tint); }
+  .mono { font-family: 'Roboto Mono', monospace; font-size: 13px; }
+  .green { color: var(--nuclear); }
+  .amber { color: var(--signal); }
+  .red { color: var(--tracer); }
+  .muted { color: var(--steel); }
+
+  /* COLOR SWATCHES */
+  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; margin: 24px 0 32px; }
+  .swatch { border: 1px solid var(--border); }
+  .swatch-color { height: 80px; position: relative; }
+  .swatch-info { padding: 12px 16px; background: var(--swatch-info-bg); }
+  .swatch-name { font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 13px; color: var(--text); margin-bottom: 4px; }
+  .swatch-hex { font-family: 'Roboto Mono', monospace; font-size: 12px; color: var(--text-muted); }
+  .swatch-class { font-family: 'Roboto Mono', monospace; font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+
+  /* BADGE DISPLAY */
+  .badge-row { display: flex; gap: 24px; margin: 24px 0; align-items: flex-start; }
+  .badge-item { text-align: center; }
+  .badge-item .badge-label {
+    font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--steel);
+    margin-top: 8px; text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .badge-box {
+    width: 88px; height: 88px; display: flex; align-items: center; justify-content: center;
+    font-family: 'Roboto', sans-serif; font-weight: 700; font-size: 42px; border: 3px solid;
+  }
+
+  .badge-showcase {
+    display: flex; gap: 32px; margin: 24px 0; padding: 32px; flex-wrap: wrap;
+    align-items: center; justify-content: center;
+  }
+  .badge-showcase.on-dark { background: var(--gunpowder); border: 1px solid var(--gunmetal); }
+  .badge-showcase.on-washout { background: var(--washout); }
+  .badge-showcase.on-light { background: var(--paper); border: 1px solid var(--border); }
+
+  /* QUADRANT CARDS */
+  .quadrant-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 32px 0; }
+  .quadrant-card { border: 1px solid var(--border); overflow: hidden; }
+  .quadrant-card-header { padding: 24px; display: flex; align-items: center; gap: 16px; }
+  .quadrant-card-body { padding: 0 24px 24px; }
+  .quadrant-card-body p { font-size: 14px; color: var(--text-secondary); margin: 0; }
+  .quadrant-card-meta { font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--steel); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+  .quadrant-card-name { font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 24px; color: var(--text); }
+
+  /* DIVISION BOXES */
+  .division-box { border: 1px solid var(--border); padding: 32px; background: var(--washout); }
+  [data-theme="dark"] .division-box { background: rgba(204,204,204,0.08); }
+  [data-theme="light"] .division-box { background: rgba(204,204,204,0.25); }
+  .logo-preview-box { background: var(--paper); border: 1px solid var(--concrete); }
+  [data-theme="dark"] .logo-preview-box { background: var(--paper); border-color: var(--concrete); }
+
+  /* LOGO DISPLAY */
+  .logo-display {
+    display: flex; align-items: center; justify-content: center;
+    padding: 48px; margin: 24px 0; border: 1px solid var(--border);
+  }
+  .logo-display.on-dark { background: var(--gunpowder); }
+  .logo-display.on-light { background: var(--paper); }
+  .logo-display svg { max-width: 400px; width: 100%; height: auto; }
+
+  /* LOGO HIERARCHY */
+  .logo-tier { display: flex; align-items: flex-start; gap: 24px; padding: 24px 0; border-bottom: 1px solid var(--border); }
+  .logo-tier:last-child { border-bottom: none; }
+  .tier-number { font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 48px; color: var(--border); min-width: 64px; line-height: 1; }
+  .tier-content h4 { margin-top: 0; color: var(--text); font-size: 18px; }
+  .tier-content p { font-size: 14px; margin-bottom: 8px; }
+  .tier-files { font-family: 'Roboto Mono', monospace; font-size: 12px; color: var(--nuclear); margin-top: 8px; }
+
+  /* TAG PILLS */
+  .tag-pill {
+    display: inline-block; font-family: 'Roboto Mono', monospace; font-weight: 500;
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+    padding: 4px 12px; margin: 4px 4px 4px 0; color: #fff;
+  }
+
+  /* PACKAGING */
+  .packaging-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 32px 0;
+  }
+  .packaging-card { border: 1px solid var(--border); overflow: hidden; }
+  .packaging-card img { width: 100%; height: auto; display: block; }
+  .packaging-card-info {
+    padding: 16px; font-family: 'Roboto Mono', monospace; font-size: 12px;
+    color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em;
+    background: var(--card-bg);
+  }
+
+  /* ZONE MAP */
+  .zone-map {
+    background: var(--concrete); color: var(--gunpowder);
+    font-family: 'Roboto Mono', monospace; font-size: 12px;
+    padding: 0; margin: 24px 0; border: 1px solid var(--washout); max-width: 720px;
+    position: relative;
+    background-image: linear-gradient(rgba(204,204,204,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(204,204,204,0.8) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .zone-band { background: var(--gunpowder); height: 32px; width: 100%; }
+  .zone-body {
+    padding: 24px 32px; min-height: 280px;
+    display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto auto; gap: 8px;
+  }
+  .zone-a { grid-column: 1; grid-row: 1; }
+  .zone-b { grid-column: 2; grid-row: 1; text-align: right; }
+  .zone-c { grid-column: 1; grid-row: 2; font-size: 28px; font-weight: 700; padding-top: 16px; }
+  .zone-d { grid-column: 1; grid-row: 3; color: var(--gunmetal); }
+  .zone-e { grid-column: 1; grid-row: 4; display: flex; gap: 6px; padding-top: 8px; }
+  .zone-f { grid-column: 2; grid-row: 2 / 4; display: flex; align-items: center; justify-content: flex-end; opacity: 0.15; font-size: 80px; font-weight: 700; color: var(--gunmetal); }
+  .zone-g { grid-column: 1; grid-row: 5; padding-top: 24px; font-size: 10px; color: var(--slate); }
+  .zone-h { grid-column: 2; grid-row: 5; text-align: right; padding-top: 24px; font-size: 11px; color: var(--slate); }
+  .zone-tag { display: inline-block; font-size: 9px; font-weight: 500; padding: 3px 8px; color: #fff; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* DO / DON'T */
+  .do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin: 24px 0; }
+  .do-col, .dont-col { padding: 24px; }
+  .do-col { border: 1px solid var(--nuclear); background: var(--card-bg); }
+  .dont-col { border: 1px solid var(--tracer); background: var(--card-bg); }
+  .do-col h4 { color: var(--nuclear); margin-top: 0; }
+  .dont-col h4 { color: var(--tracer); margin-top: 0; }
+  .rule-list { list-style: none; padding: 0; }
+  .rule-list li { font-size: 14px; color: var(--text-secondary); padding: 6px 0; padding-left: 20px; position: relative; }
+  .rule-list li::before { position: absolute; left: 0; font-family: 'Roboto Mono', monospace; font-weight: 700; font-size: 14px; }
+  .do-col .rule-list li::before { content: "+"; color: var(--nuclear); }
+  .dont-col .rule-list li::before { content: "\00d7"; color: var(--tracer); }
+
+  /* TYPE SPECIMEN */
+  .type-specimen { margin: 24px 0; padding: 32px; border: 1px solid var(--border); background: var(--card-bg); }
+  .type-sample-mono { font-family: 'Roboto Mono', monospace; margin-bottom: 16px; }
+  .type-sample-sans { font-family: 'Roboto', sans-serif; margin-bottom: 16px; }
+  .alphabet-block {
+    font-size: 22px; line-height: 1.4; color: var(--text-secondary);
+    padding: 4px 0; word-break: break-all;
+  }
+  .alphabet-block.mono { font-family: 'Roboto Mono', monospace; }
+  .alphabet-block.sans { font-family: 'Roboto', sans-serif; }
+
+  /* FILE TREE */
+  .file-tree {
+    font-family: 'Roboto Mono', monospace; font-size: 13px; line-height: 2;
+    color: var(--text-secondary); margin: 24px 0; padding: 24px;
+    border: 1px solid var(--border); background: var(--file-tree-bg);
+  }
+  .file-tree .folder { color: var(--text-muted); }
+  .file-tree .file { color: var(--nuclear); padding-left: 24px; }
+  .file-tree a { color: var(--nuclear); text-decoration: none; }
+  .file-tree a:hover { text-decoration: underline; }
+
+  /* SEPARATOR */
+  .sep {
+    display: flex; align-items: center; gap: 16px; margin: 48px 0 0;
+    font-family: 'Roboto Mono', monospace; font-size: 10px; color: var(--gunmetal);
+    text-transform: uppercase; letter-spacing: 0.12em;
+  }
+  .sep::after { content: ""; flex: 1; height: 1px; background: var(--gunmetal); }
+
+  /* VOICE EXAMPLES */
+  .voice-example { margin: 16px 0; padding: 20px 24px; border-left: 3px solid; font-size: 14px; }
+  .voice-do { border-color: var(--nuclear); background: rgba(50,205,50,0.04); }
+  .voice-dont { border-color: var(--tracer); background: rgba(237,28,36,0.04); }
+  .voice-label { font-family: 'Roboto Mono', monospace; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+  .voice-do .voice-label { color: var(--nuclear); }
+  .voice-dont .voice-label { color: var(--tracer); }
+
+  /* ICON SET */
+  .icon-grid { display: flex; flex-wrap: wrap; gap: 24px; margin: 24px 0; }
+  .icon-item { text-align: center; width: 80px; }
+  .icon-item i { font-size: 28px; color: var(--text); display: block; margin-bottom: 8px; }
+  .icon-item span { font-family: 'Roboto Mono', monospace; font-size: 9px; color: var(--steel); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* LABS SECTION */
+  .labs-logo-display {
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px; margin: 24px 0; border: 1px solid var(--border);
+  }
+  .labs-logo-display.on-dark { background: var(--gunpowder); }
+  .labs-logo-display svg { max-width: 200px; width: 100%; height: auto; }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 64px; border-top: 1px solid var(--border);
+    font-family: 'Roboto Mono', monospace; font-size: 11px; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.1em; display: flex; justify-content: space-between;
+  }
+
+  /* === MOBILE-FIRST: grids stack by default === */
+  .quadrant-grid, .packaging-grid { grid-template-columns: 1fr; }
+  .division-stack { grid-template-columns: 1fr !important; }
+  .do-dont { grid-template-columns: 1fr; }
+  h2 { font-size: 26px; }
+  h3 { font-size: 18px; }
+  footer { flex-direction: column; gap: 8px; padding: 32px 20px; }
+  .swatch-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+
+  /* Logo tier: stack on mobile */
+  .logo-tier { flex-direction: column; gap: 12px; }
+  .tier-number { font-size: 36px; min-width: auto; }
+
+  /* Background selection grid: single column on mobile */
+  .bg-selection-grid { grid-template-columns: 1fr !important; }
+
+  /* === DESKTOP (min-width: 961px) === */
+  @media (min-width: 961px) {
+    /* Hide mobile topbar, show sidebar */
+    .mobile-topbar { display: none; }
+    .nav-overlay { display: none; }
+    nav {
+      left: 0; width: 240px; padding: 32px 24px;
+    }
+    main { margin-left: 240px; }
+    section { padding: 80px 64px; }
+    .hero { padding: 120px 64px; padding-top: 120px; }
+    .hero-logo svg { height: 120px; }
+    .hero h1 { font-size: 64px; margin-bottom: 24px; }
+    .hero .subtitle { font-size: 16px; }
+    .hero .divider { margin: 32px 0; }
+    h2 { font-size: 36px; }
+    h3 { font-size: 22px; }
+    .swatch-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+    footer { flex-direction: row; padding: 40px 64px; }
+
+    /* Tables: reset block display */
+    table { display: table; overflow-x: visible; }
+
+    /* Grids: 2 columns on desktop */
+    .quadrant-grid, .packaging-grid { grid-template-columns: 1fr 1fr; }
+    .division-stack { grid-template-columns: 1fr 1fr !important; }
+    .do-dont { grid-template-columns: 1fr 1fr; }
+
+    /* Logo tier: horizontal on desktop */
+    .logo-tier { flex-direction: row; gap: 24px; }
+    .tier-number { font-size: 48px; min-width: 64px; }
+
+    /* Background selection: 2 col on desktop */
+    .bg-selection-grid { grid-template-columns: 1fr 1fr !important; }
+  }
+</style>
+</head>
+<body class="grid-bg">
+
+<!-- MOBILE NAV TOGGLE (pure CSS) -->
+<input type="checkbox" id="nav-toggle">
+<div class="mobile-topbar">
+  <label class="hamburger" for="nav-toggle"><span></span></label>
+  <img src="../atom/aa-atom-green.svg" alt="Atomic" class="topbar-icon">
+</div>
+<label class="nav-overlay" for="nav-toggle"></label>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <img src="../primary/aa-logo-wht-green-atom.svg" alt="Atomic Ammunition" class="nav-logo-dark" style="width:160px;height:auto;display:none;">
+    <img src="../primary/aa-logo-primary.svg" alt="Atomic Ammunition" class="nav-logo-light" style="width:160px;height:auto;display:none;">
+  </div>
+  <div class="nav-sub">Brand Guidelines // V1.0</div>
+
+  <div class="nav-section-label" style="margin-top:0;">Color Mode</div>
+  <div class="theme-switcher">
+    <button class="theme-btn active" id="btn-system" onclick="setTheme('system')">
+      <i class="ri-computer-line" style="font-size:12px;vertical-align:middle;"></i>
+    </button>
+    <button class="theme-btn" id="btn-light" onclick="setTheme('light')">
+      <i class="ri-sun-line" style="font-size:12px;vertical-align:middle;"></i>
+    </button>
+    <button class="theme-btn" id="btn-dark" onclick="setTheme('dark')">
+      <i class="ri-moon-line" style="font-size:12px;vertical-align:middle;"></i>
+    </button>
+  </div>
+
+  <div class="nav-section-label">Foundation</div>
+  <a href="#identity">Identity</a>
+  <a href="#colors">Colors</a>
+  <a href="#typography">Typography</a>
+  <a href="#iconography">Iconography</a>
+
+  <div class="nav-section-label">System</div>
+  <a href="#divisions">Divisions</a>
+  <a href="#quadrants">Quadrants</a>
+  <a href="#badges">Element Badges</a>
+
+  <div class="nav-section-label">Application</div>
+  <a href="#logo-usage">Logo Usage</a>
+  <a href="#labs">Labs Sub-brand</a>
+  <a href="#packaging">Packaging</a>
+  <a href="#voice">Voice &amp; Tone</a>
+  <a href="#rules">Do // Don't</a>
+
+  <div class="nav-section-label">Reference</div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main>
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="hero-logo">
+      <!-- Embedded primary logo SVG (white version, themed via CSS) -->
+      <svg id="hero-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 488.3" style="height:120px;width:auto;">
+        <g>
+          <path class="logo-fill" d="M69.7,320c.3-1,.7-2,1.4-2.8s1.6-1.5,2.5-2c1-.5,2-.8,3-.8h22.4c1,0,1.9.2,2.6.8.7.5,1.2,1.2,1.5,2,.3.9.3,1.8,0,2.8l-7,28.1h-3.8l3.1-12.3h-26.1l-3.1,12.3h-3.8l7-28.1h0ZM96.6,332l3-12c.1-.5,0-.9-.2-1.3-.3-.4-.7-.5-1.2-.5h-22.5c-.5,0-1,.2-1.4.5-.4.4-.7.8-.9,1.3l-3,12h26.1Z"/>
+          <path class="logo-fill" d="M117.2,348l8.4-33.7h5.2l9.8,16.6,18.1-16.6h5.2l-8.4,33.7h-3.8l7.3-29.4-19.9,18.3-10.8-18.3-7.3,29.4h-3.8,0Z"/>
+          <path class="logo-fill" d="M176.1,348l8.4-33.7h5.2l9.8,16.6,18.1-16.6h5.2l-8.4,33.7h-3.8l7.3-29.4-19.9,18.3-10.8-18.3-7.3,29.4h-3.8,0Z"/>
+          <path class="logo-fill" d="M237.8,347.3c-.7-.5-1.2-1.2-1.5-2-.3-.9-.3-1.8,0-2.8l7-28.1h3.8l-7,28.1c-.1.5,0,.9.2,1.3.3.4.6.5,1.1.5h22.4c.5,0,1-.2,1.4-.5.5-.4.7-.8.9-1.3l7-28.1h3.8l-7,28.1c-.3,1-.7,2-1.5,2.8-.7.9-1.6,1.5-2.5,2-1,.5-2,.8-3,.8h-22.4c-1,0-1.9-.2-2.6-.8h0Z"/>
+          <path class="logo-fill" d="M289.1,348l8.4-33.7h5.2l17.4,29.4,7.3-29.4h3.8l-8.4,33.7h-5.2l-17.4-29.4-7.3,29.4h-3.8Z"/>
+          <path class="logo-fill" d="M344,348l8.4-33.7h3.8l-8.4,33.7h-3.8Z"/>
+          <path class="logo-fill" d="M382.3,348l7.5-29.9h-15l.9-3.8h33.7l-.9,3.8h-14.9l-7.5,29.9h-3.8,0Z"/>
+          <path class="logo-fill" d="M420.5,348l8.4-33.7h3.8l-8.4,33.7h-3.8Z"/>
+          <path class="logo-fill" d="M451,348c-1,0-1.9-.2-2.6-.8s-1.2-1.2-1.5-2c-.3-.9-.3-1.8,0-2.8l5.6-22.5c.3-1,.7-2,1.5-2.8.7-.9,1.6-1.5,2.5-2,1-.5,2-.8,3-.8h22.5c1,0,1.9.2,2.6.8s1.2,1.2,1.5,2c.3.9.3,1.8,0,2.8l-5.6,22.5c-.3,1-.7,2-1.5,2.8-.7.9-1.6,1.5-2.5,2-1,.5-2,.8-3,.8h-22.5ZM451.9,344.3h22.5c.5,0,1-.2,1.4-.5.5-.4.7-.8.9-1.3l5.6-22.5c.1-.5,0-.9-.2-1.3-.3-.4-.6-.5-1.1-.5h-22.5c-.5,0-1,.2-1.4.5-.5.4-.7.8-.9,1.3l-5.6,22.5c-.1.5,0,.9.2,1.3.3.4.6.5,1.1.5Z"/>
+          <path class="logo-fill" d="M499.7,348l8.4-33.7h5.2l17.4,29.4,7.3-29.4h3.8l-8.4,33.7h-5.2l-17.4-29.4-7.3,29.4h-3.8,0Z"/>
+        </g>
+        <path class="logo-fill" d="M858.6,244.1c56.9-44.1,88.5-86.7,75.9-108.1-12.5-21.2-65.4-16-132.2,9.5-10.8-69.8-32.7-117.5-57.9-117.5s-47.3,48.3-58.1,118.8c-68.4-26.5-122.7-32.3-135.5-10.7-6.5,10.9-1.3,27.5,12.9,46.9h13.5c-4.1-10.1-4.5-18.8-.5-25.4,11.1-18.8,53.7-16.6,107.8,2.2-1,7.5-1.8,15.3-2.5,23.2h12.1c.7-6.4,1.6-12.7,2.5-18.8,23.1,8.8,47.8,20.4,72.9,34.5,25.6,14.4,48.8,29.9,68.4,45.4-19.6,15.4-42.8,30.9-68.4,45.4-25.1,14.1-49.8,25.7-72.9,34.5-.8-5.1-1.5-10.3-2.2-15.6h-12.2c.6,6.8,1.4,13.5,2.2,20-54.1,18.8-96.7,21-107.8,2.2-3.5-6-3.6-13.5-.6-22.2h-14.5c-12.5,18.1-16.8,33.4-10.6,43.7,12.8,21.5,67.1,15.8,135.5-10.7,10.7,70.5,32.7,118.8,58.1,118.8s47.1-47.8,57.9-117.5c66.8,25.5,119.7,30.7,132.2,9.5,12.7-21.4-19-63.9-75.9-108.1h0ZM775.2,189.2c-26.2-14.8-52-27.3-76.4-37.4,10.4-54.6,29.7-91.2,51.7-91.2s40,34.1,50.6,85.4c-9.1,3.5-18.4,7.3-27.9,11.5,9.7-3.9,19.1-7.4,28.2-10.4,1.8,8.8,3.4,18.2,4.7,27.9-1-9.8-2.2-19.2-3.6-28.3,50.4-16.4,89.5-17.5,100.1.4,11,18.6-11.7,53-54.6,88.9-21.5-15.9-46-31.8-72.8-46.9h0ZM902.5,341.1c-10.6,17.9-49.7,16.8-100.1.4,1.4-9.1,2.6-18.5,3.6-28.3-1.3,9.8-2.8,19.1-4.7,27.9-9.1-3-18.5-6.4-28.2-10.4,9.5,4.2,18.8,8,27.9,11.5-10.6,51.3-29.3,85.4-50.6,85.4s-41.4-36.7-51.7-91.2c24.3-10.1,50.2-22.6,76.4-37.4,26.8-15.1,51.3-31,72.8-46.9,42.9,35.9,65.6,70.3,54.6,88.9h0Z"/>
+        <g>
+          <g>
+            <polygon class="logo-green" points="74.8 252.6 62.7 301.2 92 301.2 100.5 267 154.1 267 145.6 301.2 175.2 301.2 187.3 252.6 74.8 252.6"/>
+            <path class="logo-green" d="M107.9,237.6l4.8-19.4h53.6l-4.8,19.4h29.6l5.7-22.9c1.1-4.6,1-8.9-.4-12.8-1.4-3.9-3.8-7-7.1-9.4-3.3-2.3-7.4-3.5-12-3.5h-62.2c-4.4,0-8.8,1.1-13.1,3.3-4.2,2.1-7.8,5.1-10.9,8.6-3.1,3.6-5.2,7.8-6.3,12.2l-6.1,24.5h29.3Z"/>
+          </g>
+          <g>
+            <polygon class="logo-green" points="237.5 237.6 267 237.6 271.8 218.2 313.3 218.2 320.6 188.9 208.2 188.9 200.9 218.2 242.4 218.2 237.5 237.6"/>
+            <polygon class="logo-green" points="233.8 252.6 221.7 301.2 251.1 301.2 263.2 252.6 233.8 252.6"/>
+          </g>
+          <g>
+            <path class="logo-green" d="M342,237.6l4.8-19.4h53.6l-4.8,19.4h29.6l5.7-22.9c1.1-4.6,1-8.9-.4-12.8-1.4-3.9-3.8-7-7.1-9.4-3.3-2.3-7.3-3.5-11.9-3.5h-62.4c-4.4,0-8.8,1.1-13.1,3.3-4.2,2.1-7.8,5.1-10.9,8.6-3.1,3.6-5.2,7.8-6.3,12.2l-6.1,24.5h29.3Z"/>
+            <path class="logo-green" d="M391.9,252.6l-4.8,19.4h-53.6l4.8-19.4h-29.3l-5.7,22.9c-1.1,4.5-1,8.8.3,12.7,1.4,4,3.8,7.2,7.2,9.5,3.4,2.3,7.4,3.5,11.9,3.5h62.4c4.4,0,8.8-1.1,13-3.3,4.1-2.1,7.8-5.1,10.9-8.7,3.1-3.7,5.3-7.8,6.4-12.2l6.1-24.5h-29.6,0Z"/>
+          </g>
+          <g>
+            <polygon class="logo-green" points="596.8 237.6 608.9 188.9 579.9 188.9 567.8 237.6 596.8 237.6"/>
+            <polygon class="logo-green" points="564 252.6 551.9 301.2 580.9 301.2 593 252.6 564 252.6"/>
+          </g>
+          <g>
+            <path class="logo-green" d="M623.8,271.9c0-.2,0-.5.1-.9l4.6-18.4h-29.3l-5.7,22.9c-1.2,4.6-1,8.9.3,12.8,1.4,3.9,3.7,7.1,7.1,9.4,3.3,2.3,7.4,3.5,12,3.5h86.3l7.3-29.2h-82c-.3,0-.6,0-.7,0h0Z"/>
+            <path class="logo-green" d="M639.3,188.9c-4.5,0-8.9,1.1-13.2,3.3-4.1,2.1-7.8,5.1-10.8,8.6-3.1,3.6-5.2,7.8-6.3,12.2l-6.1,24.5h29.3l4.2-16.9c.2-.6.5-1.5,1-1.9.5-.4,1.1-.5,2-.5h80.5l7.3-29.2h-87.9,0Z"/>
+          </g>
+          <g>
+            <polygon class="logo-green" points="543.5 188.9 499 229.9 474.8 188.9 447 188.9 434.9 237.6 463.6 237.6 464.2 237.6 466.1 237.6 529.8 237.6 530.8 237.6 532.2 237.6 560.3 237.6 572.4 188.9 543.5 188.9"/>
+            <polygon class="logo-green" points="419 301.2 448.3 301.2 460.4 252.6 431.1 252.6 419 301.2"/>
+            <polygon class="logo-green" points="515 301.2 544.4 301.2 556.5 252.6 527.1 252.6 515 301.2"/>
+            <polygon class="logo-green" points="488.6 275.5 513.5 252.6 475 252.6 488.6 275.5"/>
+          </g>
+        </g>
+        <path class="logo-fill" d="M697.8,234.6h-16.9l-5.3,21.4h16.9c19.6,0,51.1-6.3,52.2-10.7,1.1-4.4-27.3-10.7-46.9-10.7h0Z"/>
+      </svg>
+    </div>
+    <div class="subtitle">Brand Guidelines // Internal Reference</div>
+    <h1>ATOMIC<br>AMMUNITION</h1>
+    <div class="divider"></div>
+    <p class="lead">What happens when Apple runs the Manhattan Project. Space-industrial precision meets consumer-grade polish. Every touchpoint engineered, issued, classified — never merely marketed.</p>
+    <div class="version">Version 1.0 // 2026.03 // Marketing Team</div>
+  </section>
+
+  <!-- 01 IDENTITY -->
+  <section id="identity">
+    <span class="section-number">01 // Identity</span>
+    <h2>Brand Identity</h2>
+    <div class="accent-line"></div>
+
+    <p>Atomic Ammunition operates with the precision, intensity, and visual language of a high-end ballistics R&D laboratory — equal parts defense contractor and consumer tech. Clean like Cupertino, lethal like Los Alamos.</p>
+
+    <h3>The Vibe</h3>
+    <p>Space-industrial, hyper-tactical, utilitarian, engineered. Design elements should feel <strong>stamped, machined, or issued</strong> rather than merely printed. Form follows function. Data is the decoration.</p>
+
+    <h3>The Look</h3>
+    <p>Blueprint schematics, technical data sheets, high-contrast caution signals, and precision grid systems. If it doesn't communicate technical data or operational purpose, remove it.</p>
+
+    <h4>Reference Points</h4>
+    <table>
+      <tr><td class="mono green">Anduril Industries</td><td>Defense tech aesthetic, clean engineering</td></tr>
+      <tr><td class="mono green">Skunkworks</td><td>Classified R&D, stealth branding</td></tr>
+      <tr><td class="mono green">Weyland-Yutani</td><td>Corporate sci-fi, institutional authority</td></tr>
+      <tr><td class="mono green">Braun // Dieter Rams</td><td>Form follows function, data as decoration</td></tr>
+      <tr><td class="mono green">Apple</td><td>Precision packaging, premium restraint</td></tr>
+    </table>
+  </section>
+
+  <!-- 02 COLORS -->
+  <section id="colors">
+    <span class="section-number">02 // Colors</span>
+    <h2>Color System</h2>
+    <div class="accent-line"></div>
+
+    <p>The palette splits into two categories: <strong>Signal Colors</strong> for categorization and alerts, and the <strong>Tactical Grayscale</strong> for structural architecture.</p>
+
+    <h3>Signal Colors</h3>
+    <p class="muted" style="font-size:14px;">Used for product line categorization, UI accents, and alert states.</p>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--nuclear);"></div>
+        <div class="swatch-info"><div class="swatch-name">Nuclear</div><div class="swatch-hex">#32CD32</div><div class="swatch-class">bg-nuclear // text-nuclear</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--nuclear-muted);"></div>
+        <div class="swatch-info"><div class="swatch-name">Nuclear Muted</div><div class="swatch-hex">#28A428</div><div class="swatch-class">bg-nuclear-muted</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--signal);"></div>
+        <div class="swatch-info"><div class="swatch-name">Signal</div><div class="swatch-hex">#FFB000</div><div class="swatch-class">bg-signal // text-signal</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--signal-muted);"></div>
+        <div class="swatch-info"><div class="swatch-name">Signal Muted</div><div class="swatch-hex">#CC8D00</div><div class="swatch-class">bg-signal-muted</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--tracer);"></div>
+        <div class="swatch-info"><div class="swatch-name">Tracer</div><div class="swatch-hex">#ED1C24</div><div class="swatch-class">bg-tracer // text-tracer</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--tracer-muted);"></div>
+        <div class="swatch-info"><div class="swatch-name">Tracer Muted</div><div class="swatch-hex">#BE1620</div><div class="swatch-class">bg-tracer-muted</div></div>
+      </div>
+    </div>
+
+    <h3>Tactical Grayscale</h3>
+    <p class="muted" style="font-size:14px;">The structural backbone. Backgrounds, text, borders, and architectural elements.</p>
+    <div class="swatch-grid">
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--chalk); border-bottom:1px solid var(--concrete);"></div>
+        <div class="swatch-info"><div class="swatch-name">Chalk</div><div class="swatch-hex">#FCFCFC</div><div class="swatch-class">bg-chalk</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--paper); border-bottom:1px solid var(--concrete);"></div>
+        <div class="swatch-info"><div class="swatch-name">Paper</div><div class="swatch-hex">#FAFBFB</div><div class="swatch-class">bg-paper</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--concrete);"></div>
+        <div class="swatch-info"><div class="swatch-name">Concrete</div><div class="swatch-hex">#E5E5E5</div><div class="swatch-class">bg-concrete // text-concrete</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--washout);"></div>
+        <div class="swatch-info"><div class="swatch-name">Washout</div><div class="swatch-hex">#CCCCCC</div><div class="swatch-class">text-washout</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--steel);"></div>
+        <div class="swatch-info"><div class="swatch-name">Steel</div><div class="swatch-hex">#8E8E93</div><div class="swatch-class">text-steel</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--slate);"></div>
+        <div class="swatch-info"><div class="swatch-name">Slate</div><div class="swatch-hex">#6B6B70</div><div class="swatch-class">text-slate</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--gunmetal);"></div>
+        <div class="swatch-info"><div class="swatch-name">Gunmetal</div><div class="swatch-hex">#404040</div><div class="swatch-class">border-gunmetal</div></div>
+      </div>
+      <div class="swatch">
+        <div class="swatch-color" style="background:var(--gunpowder);"></div>
+        <div class="swatch-info"><div class="swatch-name">Gunpowder</div><div class="swatch-hex">#0D0D0D</div><div class="swatch-class">bg-gunpowder</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 TYPOGRAPHY -->
+  <section id="typography">
+    <span class="section-number">03 // Typography</span>
+    <h2>Typography</h2>
+    <div class="accent-line"></div>
+
+    <p>Clinical, highly legible, and structured like a military dossier. Two fonts, clear roles, no exceptions.</p>
+
+    <div class="type-specimen">
+      <div class="type-sample-mono" style="font-size:48px; font-weight:700; color:var(--text); line-height:1.1;">
+        ROBOTO MONO
+      </div>
+      <div style="font-family:'Roboto Mono',monospace; font-size:13px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:16px;">
+        Headings // Numbers // Data // Accents // Buttons // Tags
+      </div>
+      <div class="alphabet-block mono" style="font-weight:700;">ABCDEFGHIJKLMNOPQRSTUVWXYZ</div>
+      <div class="alphabet-block mono">abcdefghijklmnopqrstuvwxyz</div>
+      <div class="alphabet-block mono">0123456789</div>
+      <div class="alphabet-block mono" style="font-size:20px;">! @ # $ % ^ &amp; * ( ) - _ = + [ ] { } | \ ; : ' " , . &lt; &gt; / ? ~ `</div>
+    </div>
+
+    <div class="type-specimen" style="margin-top:24px;">
+      <div class="type-sample-sans" style="font-size:32px; font-weight:400; color:var(--text-secondary); line-height:1.3;">
+        Roboto
+      </div>
+      <div style="font-size:13px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; font-family:'Roboto Mono',monospace; margin-bottom:16px;">
+        Body Copy // Descriptions // Paragraphs // Labels
+      </div>
+      <div class="alphabet-block sans" style="font-weight:700;">ABCDEFGHIJKLMNOPQRSTUVWXYZ</div>
+      <div class="alphabet-block sans">abcdefghijklmnopqrstuvwxyz</div>
+      <div class="alphabet-block sans">0123456789</div>
+      <div class="alphabet-block sans" style="font-size:20px;">! @ # $ % ^ &amp; * ( ) - _ = + [ ] { } | \ ; : ' " , . &lt; &gt; / ? ~ `</div>
+    </div>
+
+    <h3>Type Scale</h3>
+    <table>
+      <thead>
+        <tr><th>Element</th><th>Typeface</th><th>Weight</th><th>Size</th><th>Spacing</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="mono">H1</td><td>Roboto Mono</td><td>Bold 700</td><td>48px</td><td>-0.02em</td></tr>
+        <tr><td class="mono">H2</td><td>Roboto Mono</td><td>Bold 700</td><td>36px</td><td>-0.01em</td></tr>
+        <tr><td class="mono">H3</td><td>Roboto Mono</td><td>Medium 500</td><td>28px</td><td>0</td></tr>
+        <tr><td class="mono">H4</td><td>Roboto Mono</td><td>Medium 500</td><td>22px</td><td>0</td></tr>
+        <tr><td class="mono">Body</td><td>Roboto</td><td>Regular 400</td><td>16px</td><td>0</td></tr>
+        <tr><td class="mono">Caption</td><td>Roboto</td><td>Regular 400</td><td>12px</td><td>0.01em</td></tr>
+        <tr><td class="mono">Button</td><td>Roboto Mono</td><td>Medium 500</td><td>14px</td><td>0.05em</td></tr>
+        <tr><td class="mono">Tag</td><td>Roboto Mono</td><td>Medium 500</td><td>11px</td><td>0.08em</td></tr>
+        <tr><td class="mono">Data Callout</td><td>Roboto Mono</td><td>Bold 700</td><td>56px</td><td>-0.02em</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Formatting Rules</h4>
+    <p><strong>Uppercase</strong> for all headers and data points. Use <strong>double tactical slashes</strong> (<span class="mono green">//</span>) as separators instead of commas or hyphens.</p>
+    <div style="font-family:'Roboto Mono',monospace; font-size:20px; color:var(--nuclear); padding:16px 0; letter-spacing:0.02em;">
+      168GR // HP BT // 2600 FPS
+    </div>
+  </section>
+
+  <!-- 04 ICONOGRAPHY -->
+  <section id="iconography">
+    <span class="section-number">04 // Iconography</span>
+    <h2>Iconography</h2>
+    <div class="accent-line"></div>
+
+    <p>Atomic Ammunition uses the <strong>Remix Icon</strong> set. Line style preferred for UI. Fill style for active/selected states. Keep icons at consistent stroke weight and optical size.</p>
+
+    <h4>Sample Icons</h4>
+    <div class="icon-grid">
+      <div class="icon-item"><i class="ri-crosshair-2-line"></i><span>Crosshair</span></div>
+      <div class="icon-item"><i class="ri-shield-line"></i><span>Shield</span></div>
+      <div class="icon-item"><i class="ri-focus-3-line"></i><span>Focus</span></div>
+      <div class="icon-item"><i class="ri-settings-3-line"></i><span>Settings</span></div>
+      <div class="icon-item"><i class="ri-dashboard-3-line"></i><span>Dashboard</span></div>
+      <div class="icon-item"><i class="ri-flashlight-line"></i><span>Flashlight</span></div>
+      <div class="icon-item"><i class="ri-bar-chart-box-line"></i><span>Analytics</span></div>
+      <div class="icon-item"><i class="ri-error-warning-line"></i><span>Warning</span></div>
+      <div class="icon-item"><i class="ri-checkbox-circle-line"></i><span>Verified</span></div>
+      <div class="icon-item"><i class="ri-map-pin-line"></i><span>Location</span></div>
+      <div class="icon-item"><i class="ri-user-line"></i><span>User</span></div>
+      <div class="icon-item"><i class="ri-search-line"></i><span>Search</span></div>
+    </div>
+
+    <h4>Rules</h4>
+    <table>
+      <tr><td class="mono green">Style</td><td>Line (default) // Fill (active states)</td></tr>
+      <tr><td class="mono green">Size</td><td>24px standard // 20px compact // 16px inline</td></tr>
+      <tr><td class="mono green">Color</td><td>Inherits text color of context. Nuclear green for interactive.</td></tr>
+      <tr><td class="mono green">Source</td><td>Remix Icon — remixicon.com</td></tr>
+    </table>
+  </section>
+
+  <!-- 05 DIVISIONS -->
+  <section id="divisions">
+    <span class="section-number">05 // Divisions</span>
+    <h2>Divisions</h2>
+    <div class="accent-line"></div>
+
+    <p>The brand is organized into two divisions, each containing two product quadrants. Divisions define the <strong>audience</strong>. Quadrants define the <strong>mission</strong>.</p>
+
+    <div class="division-stack" style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin:32px 0;">
+      <div class="division-box">
+        <div style="font-family:'Roboto Mono',monospace; font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px;">Division A</div>
+        <div style="font-family:'Roboto Mono',monospace; font-weight:700; font-size:28px; color:var(--text); margin-bottom:12px;">OPERATOR</div>
+        <p style="font-size:14px; color:var(--text-muted); margin:0;">Professional // Defense. Law enforcement, tactical training, self-defense. Uncompromising and strictly operational.</p>
+        <div style="margin-top:16px; display:flex; gap:12px;">
+          <div class="badge-box" style="width:48px; height:48px; font-size:22px; background:var(--gunpowder); border-color:var(--paper); color:var(--paper);">Ta</div>
+          <div class="badge-box" style="width:48px; height:48px; font-size:22px; background:var(--nuclear); border-color:var(--gunpowder); color:var(--gunpowder);">Du</div>
+        </div>
+      </div>
+      <div class="division-box">
+        <div style="font-family:'Roboto Mono',monospace; font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:8px;">Division B</div>
+        <div style="font-family:'Roboto Mono',monospace; font-weight:700; font-size:28px; color:var(--text); margin-bottom:12px;">MARKSMAN</div>
+        <p style="font-size:14px; color:var(--text-muted); margin:0;">Precision // Field. Competitive shooters, snipers, hunters. Mathematical perfection and reliability.</p>
+        <div style="margin-top:16px; display:flex; gap:12px;">
+          <div class="badge-box" style="width:48px; height:48px; font-size:22px; background:var(--signal); border-color:var(--gunpowder); color:var(--gunpowder);">Hu</div>
+          <div class="badge-box" style="width:48px; height:48px; font-size:22px; background:var(--tracer); border-color:var(--paper); color:var(--paper);">Ma</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 QUADRANTS -->
+  <section id="quadrants">
+    <span class="section-number">06 // Quadrants</span>
+    <h2>Product Quadrants</h2>
+    <div class="accent-line"></div>
+
+    <p>Each quadrant is styled as an <strong>element symbol</strong> — a periodic-table-style badge that serves as the primary product line identifier.</p>
+
+    <div class="quadrant-grid">
+      <div class="quadrant-card">
+        <div class="quadrant-card-header" style="background:var(--gunpowder);">
+          <div class="badge-box" style="width:64px; height:64px; font-size:32px; background:var(--gunpowder); border-color:var(--paper); color:var(--paper);">Ta</div>
+          <div>
+            <div class="quadrant-card-meta">Operator</div>
+            <div class="quadrant-card-name" style="color:var(--paper);">Tactical</div>
+          </div>
+        </div>
+        <div class="quadrant-card-body" style="padding-top:16px;">
+          <p>Stealth. Premium tactical performance. Specialized operations. Suppressed, nighttime, close-quarters. Packaging is near-black with minimal contrast.</p>
+        </div>
+      </div>
+
+      <div class="quadrant-card">
+        <div class="quadrant-card-header" style="background:var(--nuclear);">
+          <div class="badge-box" style="width:64px; height:64px; font-size:32px; background:var(--nuclear); border-color:var(--gunpowder); color:var(--gunpowder);">Du</div>
+          <div>
+            <div class="quadrant-card-meta" style="color:var(--gunpowder); opacity:0.6;">Operator</div>
+            <div class="quadrant-card-name" style="color:var(--gunpowder);">Duty</div>
+          </div>
+        </div>
+        <div class="quadrant-card-body" style="padding-top:16px;">
+          <p>High-stakes, law-enforcement-grade, active deployment. Nuclear green is aggressive and synthetic — caution tape, reactor glow, night-vision phosphor.</p>
+        </div>
+      </div>
+
+      <div class="quadrant-card">
+        <div class="quadrant-card-header" style="background:var(--signal);">
+          <div class="badge-box" style="width:64px; height:64px; font-size:32px; background:var(--signal); border-color:var(--gunpowder); color:var(--gunpowder);">Hu</div>
+          <div>
+            <div class="quadrant-card-meta" style="color:var(--gunpowder); opacity:0.6;">Marksman</div>
+            <div class="quadrant-card-name" style="color:var(--gunpowder);">Hunting</div>
+          </div>
+        </div>
+        <div class="quadrant-card-body" style="padding-top:16px;">
+          <p>Field-ready, high-yield, specialized ballistic payloads. Engineered for the wild, not the range. Amber cuts through visual noise like blaze orange through a tree line.</p>
+        </div>
+      </div>
+
+      <div class="quadrant-card">
+        <div class="quadrant-card-header" style="background:var(--tracer);">
+          <div class="badge-box" style="width:64px; height:64px; font-size:32px; background:var(--tracer); border-color:var(--paper); color:var(--paper);">Ma</div>
+          <div>
+            <div class="quadrant-card-meta" style="color:var(--paper); opacity:0.7;">Marksman</div>
+            <div class="quadrant-card-name" style="color:var(--paper);">Match</div>
+          </div>
+        </div>
+        <div class="quadrant-card-body" style="padding-top:16px;">
+          <p>Competition-grade, exact-tolerance, engineered precision. Every grain measured, every lot verified. Packaging feels like a metrology lab data sheet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 ELEMENT BADGES -->
+  <section id="badges">
+    <span class="section-number">07 // Element Badges</span>
+    <h2>Element Badges</h2>
+    <div class="accent-line"></div>
+
+    <p>Quadrant abbreviations are rendered as periodic-table-style element badges. Each quadrant has a signature color fill and a monochrome variant for dark backgrounds.</p>
+
+    <h4>Color Variants</h4>
+    <div class="badge-showcase on-washout" style="min-height:160px;">
+      <div class="badge-item">
+        <div class="badge-box" style="background:var(--gunpowder); border-color:var(--paper); color:var(--paper);">Ta</div>
+        <div class="badge-label">Tactical</div>
+      </div>
+      <div class="badge-item">
+        <div class="badge-box" style="background:var(--nuclear); border-color:var(--gunpowder); color:var(--gunpowder);">Du</div>
+        <div class="badge-label">Duty</div>
+      </div>
+      <div class="badge-item">
+        <div class="badge-box" style="background:var(--signal); border-color:var(--gunpowder); color:var(--gunpowder);">Hu</div>
+        <div class="badge-label">Hunting</div>
+      </div>
+      <div class="badge-item">
+        <div class="badge-box" style="background:var(--tracer); border-color:var(--paper); color:var(--paper);">Ma</div>
+        <div class="badge-label">Match</div>
+      </div>
+    </div>
+
+    <h4>Quadrant Colors // On Gunpowder</h4>
+    <div class="badge-showcase on-dark" style="min-height:160px;">
+      <div class="badge-item">
+        <div class="badge-box" style="background:var(--gunpowder); border-color:var(--paper); color:var(--paper);">Ta</div>
+        <div class="badge-label" style="color:var(--paper);">Tactical</div>
+      </div>
+      <div class="badge-item">
+        <div class="badge-box" style="background:var(--gunpowder); border-color:var(--nuclear); color:var(--nuclear);">Du</div>
+        <div class="badge-label" style="color:var(--nuclear);">Duty</div>
+      </div>
+      <div class="badge-item">
+        <div class="badge-box" style="background:var(--gunpowder); border-color:var(--signal); color:var(--signal);">Hu</div>
+        <div class="badge-label" style="color:var(--signal);">Hunting</div>
+      </div>
+      <div class="badge-item">
+        <div class="badge-box" style="background:var(--gunpowder); border-color:var(--tracer); color:var(--tracer);">Ma</div>
+        <div class="badge-label" style="color:var(--tracer);">Match</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 LOGO USAGE -->
+  <section id="logo-usage">
+    <span class="section-number">08 // Logo Usage</span>
+    <h2>Logo Hierarchy</h2>
+    <div class="accent-line"></div>
+
+    <p>Always start at Tier 1. Only move down when the context demands it.</p>
+
+    <h4>Primary Logo // On Dark</h4>
+    <div class="logo-display on-dark">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 488.3" style="max-width:420px;">
+        <g>
+          <path fill="#fff" d="M69.7,320c.3-1,.7-2,1.4-2.8s1.6-1.5,2.5-2c1-.5,2-.8,3-.8h22.4c1,0,1.9.2,2.6.8.7.5,1.2,1.2,1.5,2,.3.9.3,1.8,0,2.8l-7,28.1h-3.8l3.1-12.3h-26.1l-3.1,12.3h-3.8l7-28.1h0ZM96.6,332l3-12c.1-.5,0-.9-.2-1.3-.3-.4-.7-.5-1.2-.5h-22.5c-.5,0-1,.2-1.4.5-.4.4-.7.8-.9,1.3l-3,12h26.1Z"/>
+          <path fill="#fff" d="M117.2,348l8.4-33.7h5.2l9.8,16.6,18.1-16.6h5.2l-8.4,33.7h-3.8l7.3-29.4-19.9,18.3-10.8-18.3-7.3,29.4h-3.8,0Z"/>
+          <path fill="#fff" d="M176.1,348l8.4-33.7h5.2l9.8,16.6,18.1-16.6h5.2l-8.4,33.7h-3.8l7.3-29.4-19.9,18.3-10.8-18.3-7.3,29.4h-3.8,0Z"/>
+          <path fill="#fff" d="M237.8,347.3c-.7-.5-1.2-1.2-1.5-2-.3-.9-.3-1.8,0-2.8l7-28.1h3.8l-7,28.1c-.1.5,0,.9.2,1.3.3.4.6.5,1.1.5h22.4c.5,0,1-.2,1.4-.5.5-.4.7-.8.9-1.3l7-28.1h3.8l-7,28.1c-.3,1-.7,2-1.5,2.8-.7.9-1.6,1.5-2.5,2-1,.5-2,.8-3,.8h-22.4c-1,0-1.9-.2-2.6-.8h0Z"/>
+          <path fill="#fff" d="M289.1,348l8.4-33.7h5.2l17.4,29.4,7.3-29.4h3.8l-8.4,33.7h-5.2l-17.4-29.4-7.3,29.4h-3.8Z"/>
+          <path fill="#fff" d="M344,348l8.4-33.7h3.8l-8.4,33.7h-3.8Z"/>
+          <path fill="#fff" d="M382.3,348l7.5-29.9h-15l.9-3.8h33.7l-.9,3.8h-14.9l-7.5,29.9h-3.8,0Z"/>
+          <path fill="#fff" d="M420.5,348l8.4-33.7h3.8l-8.4,33.7h-3.8Z"/>
+          <path fill="#fff" d="M451,348c-1,0-1.9-.2-2.6-.8s-1.2-1.2-1.5-2c-.3-.9-.3-1.8,0-2.8l5.6-22.5c.3-1,.7-2,1.5-2.8.7-.9,1.6-1.5,2.5-2,1-.5,2-.8,3-.8h22.5c1,0,1.9.2,2.6.8s1.2,1.2,1.5,2c.3.9.3,1.8,0,2.8l-5.6,22.5c-.3,1-.7,2-1.5,2.8-.7.9-1.6,1.5-2.5,2-1,.5-2,.8-3,.8h-22.5ZM451.9,344.3h22.5c.5,0,1-.2,1.4-.5.5-.4.7-.8.9-1.3l5.6-22.5c.1-.5,0-.9-.2-1.3-.3-.4-.6-.5-1.1-.5h-22.5c-.5,0-1,.2-1.4.5-.5.4-.7.8-.9,1.3l-5.6,22.5c-.1.5,0,.9.2,1.3.3.4.6.5,1.1.5Z"/>
+          <path fill="#fff" d="M499.7,348l8.4-33.7h5.2l17.4,29.4,7.3-29.4h3.8l-8.4,33.7h-5.2l-17.4-29.4-7.3,29.4h-3.8,0Z"/>
+        </g>
+        <path fill="#fff" d="M858.6,244.1c56.9-44.1,88.5-86.7,75.9-108.1-12.5-21.2-65.4-16-132.2,9.5-10.8-69.8-32.7-117.5-57.9-117.5s-47.3,48.3-58.1,118.8c-68.4-26.5-122.7-32.3-135.5-10.7-6.5,10.9-1.3,27.5,12.9,46.9h13.5c-4.1-10.1-4.5-18.8-.5-25.4,11.1-18.8,53.7-16.6,107.8,2.2-1,7.5-1.8,15.3-2.5,23.2h12.1c.7-6.4,1.6-12.7,2.5-18.8,23.1,8.8,47.8,20.4,72.9,34.5,25.6,14.4,48.8,29.9,68.4,45.4-19.6,15.4-42.8,30.9-68.4,45.4-25.1,14.1-49.8,25.7-72.9,34.5-.8-5.1-1.5-10.3-2.2-15.6h-12.2c.6,6.8,1.4,13.5,2.2,20-54.1,18.8-96.7,21-107.8,2.2-3.5-6-3.6-13.5-.6-22.2h-14.5c-12.5,18.1-16.8,33.4-10.6,43.7,12.8,21.5,67.1,15.8,135.5-10.7,10.7,70.5,32.7,118.8,58.1,118.8s47.1-47.8,57.9-117.5c66.8,25.5,119.7,30.7,132.2,9.5,12.7-21.4-19-63.9-75.9-108.1h0ZM775.2,189.2c-26.2-14.8-52-27.3-76.4-37.4,10.4-54.6,29.7-91.2,51.7-91.2s40,34.1,50.6,85.4c-9.1,3.5-18.4,7.3-27.9,11.5,9.7-3.9,19.1-7.4,28.2-10.4,1.8,8.8,3.4,18.2,4.7,27.9-1-9.8-2.2-19.2-3.6-28.3,50.4-16.4,89.5-17.5,100.1.4,11,18.6-11.7,53-54.6,88.9-21.5-15.9-46-31.8-72.8-46.9h0ZM902.5,341.1c-10.6,17.9-49.7,16.8-100.1.4,1.4-9.1,2.6-18.5,3.6-28.3-1.3,9.8-2.8,19.1-4.7,27.9-9.1-3-18.5-6.4-28.2-10.4,9.5,4.2,18.8,8,27.9,11.5-10.6,51.3-29.3,85.4-50.6,85.4s-41.4-36.7-51.7-91.2c24.3-10.1,50.2-22.6,76.4-37.4,26.8-15.1,51.3-31,72.8-46.9,42.9,35.9,65.6,70.3,54.6,88.9h0Z"/>
+        <g>
+          <polygon fill="#32CD32" points="74.8 252.6 62.7 301.2 92 301.2 100.5 267 154.1 267 145.6 301.2 175.2 301.2 187.3 252.6 74.8 252.6"/>
+          <path fill="#32CD32" d="M107.9,237.6l4.8-19.4h53.6l-4.8,19.4h29.6l5.7-22.9c1.1-4.6,1-8.9-.4-12.8-1.4-3.9-3.8-7-7.1-9.4-3.3-2.3-7.4-3.5-12-3.5h-62.2c-4.4,0-8.8,1.1-13.1,3.3-4.2,2.1-7.8,5.1-10.9,8.6-3.1,3.6-5.2,7.8-6.3,12.2l-6.1,24.5h29.3Z"/>
+          <polygon fill="#32CD32" points="237.5 237.6 267 237.6 271.8 218.2 313.3 218.2 320.6 188.9 208.2 188.9 200.9 218.2 242.4 218.2 237.5 237.6"/>
+          <polygon fill="#32CD32" points="233.8 252.6 221.7 301.2 251.1 301.2 263.2 252.6 233.8 252.6"/>
+          <path fill="#32CD32" d="M342,237.6l4.8-19.4h53.6l-4.8,19.4h29.6l5.7-22.9c1.1-4.6,1-8.9-.4-12.8-1.4-3.9-3.8-7-7.1-9.4-3.3-2.3-7.3-3.5-11.9-3.5h-62.4c-4.4,0-8.8,1.1-13.1,3.3-4.2,2.1-7.8,5.1-10.9,8.6-3.1,3.6-5.2,7.8-6.3,12.2l-6.1,24.5h29.3Z"/>
+          <path fill="#32CD32" d="M391.9,252.6l-4.8,19.4h-53.6l4.8-19.4h-29.3l-5.7,22.9c-1.1,4.5-1,8.8.3,12.7,1.4,4,3.8,7.2,7.2,9.5,3.4,2.3,7.4,3.5,11.9,3.5h62.4c4.4,0,8.8-1.1,13-3.3,4.1-2.1,7.8-5.1,10.9-8.7,3.1-3.7,5.3-7.8,6.4-12.2l6.1-24.5h-29.6,0Z"/>
+          <polygon fill="#32CD32" points="596.8 237.6 608.9 188.9 579.9 188.9 567.8 237.6 596.8 237.6"/>
+          <polygon fill="#32CD32" points="564 252.6 551.9 301.2 580.9 301.2 593 252.6 564 252.6"/>
+          <path fill="#32CD32" d="M623.8,271.9c0-.2,0-.5.1-.9l4.6-18.4h-29.3l-5.7,22.9c-1.2,4.6-1,8.9.3,12.8,1.4,3.9,3.7,7.1,7.1,9.4,3.3,2.3,7.4,3.5,12,3.5h86.3l7.3-29.2h-82c-.3,0-.6,0-.7,0h0Z"/>
+          <path fill="#32CD32" d="M639.3,188.9c-4.5,0-8.9,1.1-13.2,3.3-4.1,2.1-7.8,5.1-10.8,8.6-3.1,3.6-5.2,7.8-6.3,12.2l-6.1,24.5h29.3l4.2-16.9c.2-.6.5-1.5,1-1.9.5-.4,1.1-.5,2-.5h80.5l7.3-29.2h-87.9,0Z"/>
+          <polygon fill="#32CD32" points="543.5 188.9 499 229.9 474.8 188.9 447 188.9 434.9 237.6 463.6 237.6 464.2 237.6 466.1 237.6 529.8 237.6 530.8 237.6 532.2 237.6 560.3 237.6 572.4 188.9 543.5 188.9"/>
+          <polygon fill="#32CD32" points="419 301.2 448.3 301.2 460.4 252.6 431.1 252.6 419 301.2"/>
+          <polygon fill="#32CD32" points="515 301.2 544.4 301.2 556.5 252.6 527.1 252.6 515 301.2"/>
+          <polygon fill="#32CD32" points="488.6 275.5 513.5 252.6 475 252.6 488.6 275.5"/>
+        </g>
+        <path fill="#fff" d="M697.8,234.6h-16.9l-5.3,21.4h16.9c19.6,0,51.1-6.3,52.2-10.7,1.1-4.4-27.3-10.7-46.9-10.7h0Z"/>
+      </svg>
+    </div>
+    <p style="font-size:13px; color:var(--text-muted); font-family:'Roboto Mono',monospace; margin-top:8px;">
+      aa-logo-primary.svg — See also: aa-logo-inverse, aa-logo-blk, aa-logo-wht, aa-logo-wht-green-text, aa-logo-wht-green-atom
+    </p>
+
+    <div class="sep">Logo Tiers</div>
+
+    <div class="logo-tier">
+      <div class="tier-number">01</div>
+      <div class="tier-content">
+        <h4>Primary Logo</h4>
+        <p>Full wordmark + atom. Default for everything. If it fits, use it.</p>
+        <div style="display:flex;gap:16px;margin:16px 0;flex-wrap:wrap;">
+          <div style="background:var(--gunpowder);padding:24px 32px;border:1px solid var(--gunmetal);display:flex;align-items:center;justify-content:center;">
+            <img src="../primary/aa-logo-wht-green-atom.svg" alt="White logo green atom" style="height:80px;width:auto;">
+          </div>
+          <div style="background:var(--paper);padding:24px 32px;border:1px solid var(--concrete);display:flex;align-items:center;justify-content:center;">
+            <img src="../primary/aa-logo-primary.svg" alt="Primary logo" style="height:80px;width:auto;">
+          </div>
+        </div>
+        <div class="tier-files">primary/ — aa-logo-primary, aa-logo-inverse, aa-logo-blk, aa-logo-wht, +variants</div>
+      </div>
+    </div>
+    <div class="logo-tier">
+      <div class="tier-number">02</div>
+      <div class="tier-content">
+        <h4>Horizontal Logo</h4>
+        <p>When vertical space is limited — nav bars, banners, email signatures, headers.</p>
+        <div style="display:flex;gap:16px;margin:16px 0;flex-wrap:wrap;">
+          <div class="logo-preview-box" style="padding:20px 32px;display:flex;align-items:center;justify-content:center;">
+            <img src="../horizontal/aa-logo-horizontal.svg" alt="Horizontal logo" style="height:48px;width:auto;">
+          </div>
+          <div class="logo-preview-box" style="padding:20px 32px;display:flex;align-items:center;justify-content:center;">
+            <img src="../horizontal/aa-logo-horizontal-alt.svg" alt="Horizontal logo alt" style="height:48px;width:auto;">
+          </div>
+        </div>
+        <div class="tier-files">horizontal/ — aa-logo-horizontal, aa-logo-horizontal-alt</div>
+      </div>
+    </div>
+    <div class="logo-tier">
+      <div class="tier-number">03</div>
+      <div class="tier-content">
+        <h4>Monogram (AA)</h4>
+        <p>When space is tight or brand is established in context — social avatars, favicons, app icons, watermarks.</p>
+        <div style="display:flex;gap:16px;margin:16px 0;flex-wrap:wrap;">
+          <div style="background:var(--gunpowder);padding:16px;border:1px solid var(--gunmetal);display:flex;align-items:center;justify-content:center;">
+            <img src="../monogram/aa-monogram-wht-green-atom.svg" alt="Monogram white green atom" style="height:64px;width:auto;">
+          </div>
+          <div style="background:var(--paper);padding:16px;border:1px solid var(--concrete);display:flex;align-items:center;justify-content:center;">
+            <img src="../monogram/aa-monogram-primary.svg" alt="Monogram primary" style="height:64px;width:auto;">
+          </div>
+        </div>
+        <div class="tier-files">monogram/ — aa-monogram-primary, aa-monogram-blk, aa-monogram-wht, +variants</div>
+      </div>
+    </div>
+    <div class="logo-tier">
+      <div class="tier-number">04</div>
+      <div class="tier-content">
+        <h4>Atom Icon</h4>
+        <p>Decorative or secondary use only — patterns, loading animations, accent marks. Never the sole brand identifier.</p>
+        <div style="display:flex;gap:16px;margin:16px 0;flex-wrap:wrap;">
+          <div style="background:var(--gunpowder);padding:16px;border:1px solid var(--gunmetal);display:flex;align-items:center;justify-content:center;">
+            <img src="../atom/aa-atom-green.svg" alt="Atom green" style="height:56px;width:auto;">
+          </div>
+          <div style="background:var(--paper);padding:16px;border:1px solid var(--concrete);display:flex;align-items:center;justify-content:center;">
+            <img src="../atom/aa-atom-blk.svg" alt="Atom black" style="height:56px;width:auto;">
+          </div>
+        </div>
+        <div class="tier-files">atom/ — aa-atom-green, aa-atom-blk, aa-atom-gry, aa-atom-wash</div>
+      </div>
+    </div>
+    <div class="logo-tier">
+      <div class="tier-number">05</div>
+      <div class="tier-content">
+        <h4>Labs Sub-brand</h4>
+        <p>R&D / Ballistics Lab content only. Never mix with the primary brand in the same layout.</p>
+        <div style="display:flex;gap:16px;margin:16px 0;flex-wrap:wrap;">
+          <div style="background:var(--gunpowder);padding:16px;border:1px solid var(--gunmetal);display:flex;align-items:center;justify-content:center;">
+            <img src="../labs/aa-lab-logo-wht.svg" alt="Labs logo white" style="height:64px;width:auto;">
+          </div>
+          <div style="background:var(--paper);padding:16px;border:1px solid var(--concrete);display:flex;align-items:center;justify-content:center;">
+            <img src="../labs/aa-lab-logo.svg" alt="Labs logo dark" style="height:64px;width:auto;">
+          </div>
+        </div>
+        <div class="tier-files">labs/ — aa-lab-ballistics, aa-lab-ballistics-nobg, aa-lab-logo, +variants</div>
+      </div>
+    </div>
+
+    <h3>Background Selection</h3>
+    <div class="bg-selection-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0 32px;">
+      <div style="background:var(--gunpowder);padding:32px;border:1px solid var(--gunmetal);text-align:center;">
+        <img src="../primary/aa-logo-wht-green-text.svg" alt="On Gunpowder" style="height:60px;width:auto;margin-bottom:12px;">
+        <div style="font-family:'Roboto Mono',monospace;font-size:11px;color:var(--steel);text-transform:uppercase;letter-spacing:0.08em;">Gunpowder // aa-logo-wht-green-text</div>
+      </div>
+      <div style="background:var(--paper);padding:32px;border:1px solid var(--concrete);text-align:center;">
+        <img src="../primary/aa-logo-primary.svg" alt="On Paper" style="height:60px;width:auto;margin-bottom:12px;">
+        <div style="font-family:'Roboto Mono',monospace;font-size:11px;color:var(--slate);text-transform:uppercase;letter-spacing:0.08em;">Paper // aa-logo-primary</div>
+      </div>
+      <div style="background:var(--nuclear);padding:32px;border:1px solid var(--nuclear-muted);text-align:center;">
+        <img src="../primary/aa-logo-wht.svg" alt="On Nuclear" style="height:60px;width:auto;margin-bottom:12px;">
+        <div style="font-family:'Roboto Mono',monospace;font-size:11px;color:var(--gunpowder);text-transform:uppercase;letter-spacing:0.08em;">Nuclear // aa-logo-wht</div>
+      </div>
+      <div style="background:linear-gradient(135deg,#333 0%,#555 100%);padding:32px;border:1px solid var(--gunmetal);text-align:center;">
+        <img src="../primary/aa-logo-wht.svg" alt="On Photography" style="height:60px;width:auto;margin-bottom:12px;">
+        <div style="font-family:'Roboto Mono',monospace;font-size:11px;color:var(--steel);text-transform:uppercase;letter-spacing:0.08em;">Photography // aa-logo-wht or blk</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 LABS SUB-BRAND -->
+  <section id="labs">
+    <span class="section-number">09 // Labs</span>
+    <h2>What Is Atomic Ammunition Ballistics Lab</h2>
+    <div class="accent-line"></div>
+
+    <div class="labs-logo-display on-dark">
+      <img src="../labs/aa-lab-logo-wht.svg" alt="Atomic Ammunition Ballistics Lab logo" style="max-width:200px;height:auto;">
+    </div>
+
+    <p><strong>Atomic Ammunition Ballistics Lab</strong> is a secondary brand style used to showcase the engineering, research, and development side of Atomic Ammunition. It positions the company as a high-tech, scientific, precision-engineering operation — the innovators behind the product.</p>
+
+    <p>Labs branding is deployed on a campaign-by-campaign basis. When the message is about manufacturing processes, load development, ballistic research, pressure testing, or design innovation, the Labs identity takes the lead. It can carry a retro-scientific aesthetic — think lab coats, test data, technical schematics — while still speaking to the same core audience through a different lens.</p>
+
+    <h3>When to Use Labs</h3>
+    <table>
+      <thead><tr><th>Scenario</th><th>Example</th></tr></thead>
+      <tbody>
+        <tr><td>Engineering &amp; R&amp;D content</td><td>Load development stories, pressure curve data, prototype testing</td></tr>
+        <tr><td>Innovation campaigns</td><td>New product development, behind-the-scenes manufacturing</td></tr>
+        <tr><td>Technical documentation</td><td>White papers, lot verification reports, ballistic data sheets</td></tr>
+        <tr><td>Brand storytelling</td><td>Positioning Atomic as scientific pioneers, not just manufacturers</td></tr>
+      </tbody>
+    </table>
+
+    <h4>Labs Usage Rules</h4>
+    <table>
+      <tr><td class="mono green">Separation</td><td>Never mix Labs logo with primary brand in the same layout</td></tr>
+      <tr><td class="mono green">Campaign-driven</td><td>Used on/off depending on whether the message is about innovation, R&amp;D, or engineering</td></tr>
+      <tr><td class="mono green">Same audience</td><td>Marketing to the same customers through a different avenue — the science behind the product</td></tr>
+      <tr><td class="mono green">Aesthetic</td><td>Can lean retro-scientific — lab reports, schematics, test data visuals</td></tr>
+      <tr><td class="mono green">Files</td><td>aa-lab-ballistics.svg (with bg), aa-lab-ballistics-nobg.svg, aa-lab-logo.svg</td></tr>
+    </table>
+  </section>
+
+  <!-- 10 PACKAGING -->
+  <section id="packaging">
+    <span class="section-number">10 // Packaging</span>
+    <h2>Packaging Anatomy</h2>
+    <div class="accent-line"></div>
+
+    <p>Every box follows the same layout grid regardless of quadrant. What changes is color, not structure.</p>
+
+    <h3>Product Packaging</h3>
+    <div class="packaging-grid">
+      <div class="packaging-card">
+        <img src="../labels/aa-762-tactical-220-ta.webp" alt="7.62x39 Tactical packaging">
+        <div class="packaging-card-info">Ta // 7.62x39 Tactical // Operator</div>
+      </div>
+      <div class="packaging-card">
+        <img src="../labels/aa-556-nato-mk262-du.webp" alt="5.56 NATO MK262 Duty packaging">
+        <div class="packaging-card-info">Du // 5.56 NATO MK262 // Operator</div>
+      </div>
+      <div class="packaging-card">
+        <img src="../labels/aa-65-CM-129gr-hu.webp" alt="6.5 Creedmoor Hunting packaging">
+        <div class="packaging-card-info">Hu // 6.5 Creedmoor // Marksman</div>
+      </div>
+      <div class="packaging-card">
+        <img src="../labels/aa-308-WIN-168gr-MATCH-1-ma.webp" alt=".308 Winchester Match packaging">
+        <div class="packaging-card-info">Ma // .308 Winchester // Marksman</div>
+      </div>
+    </div>
+
+    <h3>Quadrant Backgrounds</h3>
+    <table>
+      <thead>
+        <tr><th>Quadrant</th><th>Body Color</th><th>Grid</th><th>Text</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="mono">Ta</span> Tactical</td><td>Gunpowder <span class="mono muted">#0D0D0D</span></td><td>Gunmetal (stealth)</td><td>White // Steel</td></tr>
+        <tr><td><span class="mono">Du</span> Duty</td><td>Nuclear <span class="mono green">#32CD32</span></td><td>Dark green tint</td><td>White // Gunpowder</td></tr>
+        <tr><td><span class="mono">Hu</span> Hunting</td><td>Concrete <span class="mono muted">#E5E5E5</span></td><td>Washout</td><td>Gunpowder</td></tr>
+        <tr><td><span class="mono">Ma</span> Match</td><td>Concrete <span class="mono muted">#E5E5E5</span></td><td>Washout</td><td>Gunpowder</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Quadrant Tag Colors</h3>
+    <p>When using quadrant names as tags or badges, use their assigned signal color:</p>
+    <div style="margin:16px 0 32px;">
+      <span class="tag-pill" style="background:var(--gunpowder);">TACTICAL</span>
+      <span class="tag-pill" style="background:var(--nuclear);">DUTY</span>
+      <span class="tag-pill" style="background:var(--signal);">HUNTING</span>
+      <span class="tag-pill" style="background:var(--tracer);">MATCH</span>
+    </div>
+    <div style="margin:0 0 32px;">
+      <span class="tag-pill" style="background:var(--nuclear);">SUBSONIC</span>
+      <span class="tag-pill" style="background:var(--nuclear);">COMPETITION</span>
+      <span class="tag-pill" style="background:var(--nuclear);">CYCLING</span>
+      <span class="tag-pill" style="background:var(--nuclear);">BONDED</span>
+      <span class="tag-pill" style="background:var(--gunmetal);">DEFENSE</span>
+      <span class="tag-pill" style="background:var(--gunmetal);">X20</span>
+      <span class="tag-pill" style="background:var(--gunmetal);">X50</span>
+    </div>
+    <table>
+      <thead><tr><th>Tag Type</th><th>Color</th><th>Examples</th></tr></thead>
+      <tbody>
+        <tr><td>Quadrant name</td><td>Respective quadrant color</td><td>Tactical (Gunpowder), Duty (Nuclear), Hunting (Signal), Match (Tracer)</td></tr>
+        <tr><td>Product attribute</td><td class="green">Nuclear green</td><td>SUBSONIC, COMPETITION, CYCLING, BONDED</td></tr>
+        <tr><td>Secondary / Quantity</td><td class="muted">Gunmetal</td><td>DEFENSE, X20, X50</td></tr>
+      </tbody>
+    </table>
+
+  </section>
+
+  <!-- 11 VOICE -->
+  <section id="voice">
+    <span class="section-number">11 // Voice &amp; Tone</span>
+    <h2>Voice &amp; Tone</h2>
+    <div class="accent-line"></div>
+
+    <p>Clinical, confident, sparse. Reads like a technical brief, not an ad. The data sells itself.</p>
+
+    <div class="voice-example voice-do">
+      <div class="voice-label">Do</div>
+      <div style="font-family:'Roboto Mono',monospace; font-size:14px; color:var(--text);">
+        168-grain hollow point boat tail. Match-grade brass. Lot-verified to &plusmn;0.3 grain.
+      </div>
+    </div>
+
+    <div class="voice-example voice-dont">
+      <div class="voice-label">Don't</div>
+      <div style="font-family:'Roboto Mono',monospace; font-size:14px; color:var(--text-secondary);">
+        Our premium ammunition delivers incredible accuracy for the discerning shooter!
+      </div>
+    </div>
+
+    <h4>Rules</h4>
+    <table>
+      <tr><td class="mono green">Data as copy</td><td>Specifications are the message. Let numbers speak.</td></tr>
+      <tr><td class="mono green">Imperative voice</td><td>"Select your configuration." "Verify lot number."</td></tr>
+      <tr><td class="mono green">No superlatives</td><td>Never say best, ultimate, incredible. Use measurable claims.</td></tr>
+      <tr><td class="mono green">Short &amp; declarative</td><td>When longer copy is needed, keep sentences short. No fluff.</td></tr>
+      <tr><td class="mono green">// Separators</td><td>Use double slashes between data points, not commas.</td></tr>
+    </table>
+  </section>
+
+  <!-- 12 DO / DON'T -->
+  <section id="rules">
+    <span class="section-number">12 // Rules</span>
+    <h2>Do // Don't</h2>
+    <div class="accent-line"></div>
+
+    <div class="do-dont">
+      <div class="do-col">
+        <h4><i class="ri-checkbox-circle-line"></i> Do</h4>
+        <ul class="rule-list">
+          <li>Use SVG for all digital placements</li>
+          <li>Match color variant to background</li>
+          <li>Maintain clear space on all sides</li>
+          <li>Start with primary logo, move down only when needed</li>
+          <li>Keep Labs brand separate from main brand</li>
+          <li>Use the grid — it's never absent</li>
+          <li>Uppercase for headers and data</li>
+          <li>Use // as data separator</li>
+        </ul>
+      </div>
+      <div class="dont-col">
+        <h4><i class="ri-close-circle-line"></i> Don't</h4>
+        <ul class="rule-list">
+          <li>Rotate, skew, stretch, or distort any logo</li>
+          <li>Change logo colors outside provided variants</li>
+          <li>Place logo on low-contrast backgrounds without overlay</li>
+          <li>Use atom icon alone as brand identifier</li>
+          <li>Add drop shadows, gradients, or effects</li>
+          <li>Use friendly marketing copy or lifestyle imagery</li>
+          <li>Place logo smaller than minimum size</li>
+          <li>Mix Labs and primary logos in same layout</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer>
+    <span>Atomic Ammunition // Brand Guidelines V1.0</span>
+    <span>2026.03 // Confidential</span>
+  </footer>
+
+</main>
+
+<script>
+(function() {
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+
+  function resolveSystem() {
+    return prefersDark.matches ? 'dark' : 'light';
+  }
+
+  let currentMode = 'system'; // system, light, dark
+
+  function setActiveBtn() {
+    document.getElementById('btn-system').classList.toggle('active', currentMode === 'system');
+    document.getElementById('btn-light').classList.toggle('active', currentMode === 'light');
+    document.getElementById('btn-dark').classList.toggle('active', currentMode === 'dark');
+  }
+
+  window.setTheme = function(mode) {
+    currentMode = mode;
+    if (mode === 'system') {
+      applyTheme(resolveSystem());
+    } else {
+      applyTheme(mode);
+    }
+    setActiveBtn();
+  };
+
+  // Listen for system changes
+  prefersDark.addEventListener('change', function() {
+    if (currentMode === 'system') applyTheme(resolveSystem());
+  });
+
+  // Default to system
+  setTheme('system');
+
+  // Close mobile nav on link click
+  document.querySelectorAll('nav a').forEach(function(link) {
+    link.addEventListener('click', function() {
+      document.getElementById('nav-toggle').checked = false;
+    });
+  });
+})();
+</script>
+</body>
+</html>
